@@ -13,6 +13,8 @@ use App\Repositories\Contracts\SaleRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InvoiceMail;
 
 class SaleService
 {
@@ -100,6 +102,15 @@ class SaleService
 
             // Update employee KPI if customer was assigned
             $this->updateEmployeeKpi($sale);
+
+            // Send Invoice Email to Customer
+            try {
+                if ($sale->customer && $sale->customer->email) {
+                    Mail::to($sale->customer->email)->send(new InvoiceMail($sale));
+                }
+            } catch (\Exception $e) {
+                \Log::error("Failed to send invoice email for sale #{$sale->invoice_number}: " . $e->getMessage());
+            }
 
             return $sale->fresh(['customer', 'branch', 'employee', 'items.product']);
         });

@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReEngagementMail;
 
 class CustomerService
 {
@@ -92,8 +94,11 @@ class CustomerService
             throw new \InvalidArgumentException('Customer not found.');
         }
 
-        // Here you would integrate with your email/SMS service
-        // For now, we'll just log the action
+        if ($channel === 'email') {
+            Mail::to($customer->email)->send(new ReEngagementMail($message));
+        }
+
+        // We also log the action for audit trail / SMS simulation
         \Log::info("Re-engagement {$channel} sent to customer {$customer->email}", [
             'customer_id' => $customerId,
             'message' => $message,
