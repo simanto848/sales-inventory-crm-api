@@ -47,7 +47,7 @@ The application follows the **Repository-Service Pattern** to achieve high separ
 1. **Clone the Repository:**
     ```bash
     git clone https://github.com/simanto848/sales-inventory-crm-api.git
-    cd sales-inventory-crm-api/backend
+    cd sales-inventory-crm-api
     ```
 
 2. **Install Dependencies:**
