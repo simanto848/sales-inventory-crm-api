@@ -12,69 +12,87 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductIntegrationController;
 use App\Http\Controllers\Api\SaleController;
 
-// Public Auth routes
-Route::post('/auth/login', [AuthController::class, 'login']);
+// Auth Routes (Mixed public and protected)
+Route::prefix('auth')->controller(AuthController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/profile', 'profile');
+        Route::post('/logout', 'logout');
+    });
+});
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Auth info & logout
-    Route::get('/auth/profile', [AuthController::class, 'profile']);
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    // Branches
-    Route::get('/branches', [BranchController::class, 'listBranches']);
-    Route::post('/branches', [BranchController::class, 'createBranch']);
-    Route::get('/branches/{branch}', [BranchController::class, 'getBranchDetails']);
-    Route::put('/branches/{branch}', [BranchController::class, 'updateBranch']);
-    Route::delete('/branches/{branch}', [BranchController::class, 'deleteBranch']);
+    // Branches & Branch Stock
+    Route::prefix('branches')->group(function () {
+        Route::controller(BranchController::class)->group(function () {
+            Route::get('/', 'listBranches');
+            Route::post('/', 'createBranch');
+            Route::get('/{branch}', 'getBranchDetails');
+            Route::put('/{branch}', 'updateBranch');
+            Route::delete('/{branch}', 'deleteBranch');
+        });
 
-    // Branch inventory/stock management
-    Route::get('/branches/{branch}/inventory', [BranchStockController::class, 'getBranchInventory']);
-    Route::post('/branches/{branch}/inventory', [BranchStockController::class, 'updateBranchStock']);
-    Route::post('/branches/{branch}/inventory/adjust', [BranchStockController::class, 'adjustBranchStock']);
-    Route::post('/branches/{branch}/inventory/add-product', [BranchStockController::class, 'addProductToBranchInventory']);
-    Route::get('/branches/{branch}/inventory/low-stock', [BranchStockController::class, 'getBranchLowStock']);
-    Route::get('/branches/{branch}/inventory/{product}', [BranchStockController::class, 'getBranchProductStock']);
+        Route::prefix('{branch}/inventory')->controller(BranchStockController::class)->group(function () {
+            Route::get('/', 'getBranchInventory');
+            Route::post('/', 'updateBranchStock');
+            Route::post('/adjust', 'adjustBranchStock');
+            Route::post('/add-product', 'addProductToBranchInventory');
+            Route::get('/low-stock', 'getBranchLowStock');
+            Route::get('/{product}', 'getBranchProductStock');
+        });
+    });
+
+    // Global Inventory
     Route::get('/inventory', [BranchStockController::class, 'getAllInventory']);
 
     // Products
-    Route::get('/products/search', [ProductController::class, 'searchProducts']);
-    Route::get('/products', [ProductController::class, 'listProducts']);
-    Route::post('/products', [ProductController::class, 'createProduct']);
-    Route::get('/products/{product}', [ProductController::class, 'getProductDetails']);
-    Route::put('/products/{product}', [ProductController::class, 'updateProduct']);
-    Route::delete('/products/{product}', [ProductController::class, 'deleteProduct']);
+    Route::prefix('products')->controller(ProductController::class)->group(function () {
+        Route::get('/search', 'searchProducts');
+        Route::get('/', 'listProducts');
+        Route::post('/', 'createProduct');
+        Route::get('/{product}', 'getProductDetails');
+        Route::put('/{product}', 'updateProduct');
+        Route::delete('/{product}', 'deleteProduct');
+    });
 
     // Customers
-    Route::get('/customers/search', [CustomerController::class, 'searchCustomers']);
-    Route::get('/customers/inactive', [CustomerController::class, 'listInactiveCustomers']);
-    Route::get('/customers/assigned', [CustomerController::class, 'listAssignedCustomers']);
-    Route::post('/customers/{customer}/assign-employee', [CustomerController::class, 'assignCustomerToEmployee']);
-    Route::post('/customers/{customer}/unassign-employee', [CustomerController::class, 'unassignCustomerFromEmployee']);
-    Route::post('/customers/{customer}/re-engage', [CustomerController::class, 'sendCustomerReEngagement']);
-    Route::get('/customers/{customer}/purchases', [CustomerController::class, 'getCustomerPurchaseHistory']);
-    Route::get('/customers', [CustomerController::class, 'listCustomers']);
-    Route::post('/customers', [CustomerController::class, 'createCustomer']);
-    Route::get('/customers/{customer}', [CustomerController::class, 'getCustomerDetails']);
-    Route::put('/customers/{customer}', [CustomerController::class, 'updateCustomer']);
-    Route::delete('/customers/{customer}', [CustomerController::class, 'deleteCustomer']);
+    Route::prefix('customers')->controller(CustomerController::class)->group(function () {
+        Route::get('/search', 'searchCustomers');
+        Route::get('/inactive', 'listInactiveCustomers');
+        Route::get('/assigned', 'listAssignedCustomers');
+        Route::post('/{customer}/assign-employee', 'assignCustomerToEmployee');
+        Route::post('/{customer}/unassign-employee', 'unassignCustomerFromEmployee');
+        Route::post('/{customer}/re-engage', 'sendCustomerReEngagement');
+        Route::get('/{customer}/purchases', 'getCustomerPurchaseHistory');
+        Route::get('/', 'listCustomers');
+        Route::post('/', 'createCustomer');
+        Route::get('/{customer}', 'getCustomerDetails');
+        Route::put('/{customer}', 'updateCustomer');
+        Route::delete('/{customer}', 'deleteCustomer');
+    });
 
     // Sales
-    Route::get('/sales/customer/{customerId}', [SaleController::class, 'getSalesByCustomer']);
-    Route::get('/sales/branch/{branchId}', [SaleController::class, 'getSalesByBranch']);
-    Route::get('/sales', [SaleController::class, 'listSales']);
-    Route::post('/sales', [SaleController::class, 'createSale']);
-    Route::get('/sales/{sale}', [SaleController::class, 'getSaleDetails']);
-    Route::delete('/sales/{sale}', [SaleController::class, 'deleteSale']);
+    Route::prefix('sales')->controller(SaleController::class)->group(function () {
+        Route::get('/customer/{customerId}', 'getSalesByCustomer');
+        Route::get('/branch/{branchId}', 'getSalesByBranch');
+        Route::get('/', 'listSales');
+        Route::post('/', 'createSale');
+        Route::get('/{sale}', 'getSaleDetails');
+        Route::delete('/{sale}', 'deleteSale');
+    });
 
     // Employees
-    Route::get('/employees/top-performers', [EmployeeController::class, 'getTopPerformers']);
-    Route::get('/employees/{employee}/kpi', [EmployeeController::class, 'getEmployeeKpi']);
-    Route::get('/employees', [EmployeeController::class, 'listEmployees']);
-    Route::post('/employees', [EmployeeController::class, 'createEmployee']);
-    Route::get('/employees/{employee}', [EmployeeController::class, 'getEmployeeDetails']);
-    Route::put('/employees/{employee}', [EmployeeController::class, 'updateEmployee']);
-    Route::delete('/employees/{employee}', [EmployeeController::class, 'deleteEmployee']);
+    Route::prefix('employees')->controller(EmployeeController::class)->group(function () {
+        Route::get('/top-performers', 'getTopPerformers');
+        Route::get('/{employee}/kpi', 'getEmployeeKpi');
+        Route::get('/', 'listEmployees');
+        Route::post('/', 'createEmployee');
+        Route::get('/{employee}', 'getEmployeeDetails');
+        Route::put('/{employee}', 'updateEmployee');
+        Route::delete('/{employee}', 'deleteEmployee');
+    });
 });
 
 // Third-party e-commerce integration API (Secured by API Key)
