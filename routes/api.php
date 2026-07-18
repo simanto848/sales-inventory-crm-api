@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\BranchStockController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductIntegrationController;
 use App\Http\Controllers\Api\SaleController;
 
 // Public Auth routes
@@ -74,4 +75,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employees/{employee}', [EmployeeController::class, 'getEmployeeDetails']);
     Route::put('/employees/{employee}', [EmployeeController::class, 'updateEmployee']);
     Route::delete('/employees/{employee}', [EmployeeController::class, 'deleteEmployee']);
+});
+
+// Third-party e-commerce integration API (Secured by API Key)
+Route::middleware('api.key')->group(function () {
+    Route::get('/integration/products', [ProductIntegrationController::class, 'index']);
 });
