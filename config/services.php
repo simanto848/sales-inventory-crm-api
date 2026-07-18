@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'integration' => [
+        'api_key' => env('INTEGRATION_API_KEY', 'simulated-integration-key-12345'),
+    ],
+
 ];
