@@ -16,17 +16,17 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return Product::paginate($perPage);
+        return Product::with('branches')->paginate($perPage);
     }
 
     public function findById(int $id): ?Product
     {
-        return Product::find($id);
+        return Product::with('branches')->find($id);
     }
 
     public function findBySku(string $sku): ?Product
     {
-        return Product::where('sku', $sku)->first();
+        return Product::with('branches')->where('sku', $sku)->first();
     }
 
     public function create(array $data): Product
@@ -37,7 +37,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function update(Product $product, array $data): Product
     {
         $product->update($data);
-        return $product->fresh();
+        return $product->fresh('branches');
     }
 
     public function delete(Product $product): bool
@@ -48,6 +48,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function search(string $query, int $perPage = 15): LengthAwarePaginator
     {
         return Product::query()
+            ->with('branches')
             ->where('name', 'like', "%{$query}%")
             ->orWhere('sku', 'like', "%{$query}%")
             ->orWhere('description', 'like', "%{$query}%")

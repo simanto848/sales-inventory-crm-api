@@ -11,6 +11,15 @@ class StoreSaleRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->user()) {
+            $this->merge([
+                'employee_id' => $this->user()->id,
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
