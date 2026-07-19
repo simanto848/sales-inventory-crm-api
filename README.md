@@ -15,7 +15,9 @@ A clean, maintainable, and scalable backend business application built with Lara
 *   **Purchase History:** Tracks complete customer transactions, automatically incrementing purchase frequency and updating the last purchase date.
 *   **Inactive Customer Detection:** Query to identify "lost" customers who have not made a purchase within a configurable window (e.g., 90 days).
 *   **Customer Re-engagement:** Exposes endpoints to trigger re-engagement messages via email (sent using Laravel Mailables) or SMS.
-*   **Employee Assignment:** Administrators can assign inactive customers to specific employees for follow-up.
+*   **Employee Assignment & Scoping:**
+    *   Administrators can assign inactive customers to specific employees for follow-up.
+    *   **Branch-specific scoping (Optional):** Employees can be assigned to a specific branch location. Scoped employees only see statistics, customer logs, sales checkout parameters, and catalogs belonging to their assigned store branch. Global employees retain complete cross-branch visibility.
 *   **KPI Tracking:** Automatically increments the assigned employee's KPI score by +10 when their assigned inactive customer makes a new purchase.
 
 ### 3. Bonus Features
