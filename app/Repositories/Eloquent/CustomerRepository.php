@@ -48,9 +48,12 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getInactiveCustomers(int $days = 90): Collection
     {
-        $cutoffDate = Carbon::now()->subDays($days)->subDays($days);
-        return Customer::query()->where('last_purchase_date', '<', $cutoffDate)
-            ->where('is_active', true)
+        $cutoffDate = \Carbon\Carbon::now()->subDays($days);
+        return Customer::query()
+            ->where(function ($query) use ($cutoffDate) {
+                $query->where('last_purchase_date', '<', $cutoffDate)
+                      ->orWhereNull('last_purchase_date');
+            })
             ->with('assignedEmployee')
             ->get();
     }
