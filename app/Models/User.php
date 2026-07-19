@@ -13,7 +13,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['name', 'email', 'password', 'role', 'kpi_score'];
+    protected $fillable = ['name', 'email', 'password', 'role', 'kpi_score', 'branch_id'];
     protected $hidden = ['password', 'remember_token'];
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -24,7 +24,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'kpi_score' => 'integer',
+            'branch_id' => 'integer',
         ];
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function sales(): HasMany

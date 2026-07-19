@@ -59,8 +59,21 @@ class CustomerController extends Controller
 
     public function listInactiveCustomers(): JsonResponse
     {
+        $days = (int) request()->get('days', 90);
+        $user = request()->user();
+        
+        $inactiveCustomers = $this->customerService->getInactiveCustomers($days);
+        
+        if ($user && $user->branch_id) {
+            // Filter inactive customers who have purchased from this branch before or are assigned
+            $branchId = $user->branch_id;
+            $inactiveCustomers = $inactiveCustomers->filter(function ($customer) use ($branchId) {
+                return $customer->sales()->where('branch_id', $branchId)->exists() || $customer->assigned_employee_id === auth()->id();
+            })->values();
+        }
+
         return $this->success(
-            $this->customerService->getInactiveCustomers((int) request()->get('days', 90)),
+            $inactiveCustomers,
             'Inactive customers retrieved successfully'
         );
     }

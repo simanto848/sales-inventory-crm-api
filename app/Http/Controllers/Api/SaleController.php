@@ -19,6 +19,14 @@ class SaleController extends Controller
 
     public function listSales(): JsonResponse
     {
+        $user = request()->user();
+        if ($user && $user->branch_id) {
+            return $this->success(
+                Sale::where('branch_id', $user->branch_id)->with(['customer', 'branch', 'employee', 'items.product'])->paginate((int) request()->get('per_page', 15)),
+                'Sales retrieved successfully'
+            );
+        }
+
         return $this->success(
             $this->saleService->getAllSales((int) request()->get('per_page', 15)),
             'Sales retrieved successfully'

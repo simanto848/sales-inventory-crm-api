@@ -29,6 +29,7 @@ class AuthService
                 'email' => $user->email,
                 'role' => $user->role,
                 'kpi_score' => $user->kpi_score,
+                'branch_id' => $user->branch_id,
             ],
         ];
     }

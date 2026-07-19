@@ -20,6 +20,12 @@ class BranchController extends Controller
 
     public function listBranches(): JsonResponse
     {
+        $user = request()->user();
+        if ($user && $user->branch_id) {
+            $branches = Branch::where('id', $user->branch_id)->paginate((int) request()->get('per_page', 15));
+            return $this->success($branches, 'Branches retrieved successfully');
+        }
+
         return $this->success(
             $this->branchService->getAllBranches((int) request()->get('per_page', 15)),
             'Branches retrieved successfully'
