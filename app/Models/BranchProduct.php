@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['branch_id', 'product_id', 'stock_quantity'])]
 class BranchProduct extends Model
 {
+    protected $fillable = ['branch_id', 'product_id', 'stock_quantity'];
     protected $table = 'branch_products';
 
     public function branch(): BelongsTo

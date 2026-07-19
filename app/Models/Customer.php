@@ -10,19 +10,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable([
-    'name',
-    'email',
-    'phone',
-    'address',
-    'is_active',
-    'purchase_frequency',
-    'last_purchase_date',
-    'assigned_employee_id',
-])]
-#[HasFactory(CustomerFactory::class)]
 class Customer extends Model
 {
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'address',
+        'is_active',
+        'purchase_frequency',
+        'last_purchase_date',
+        'assigned_employee_id',
+    ];
     use HasFactoryTrait;
 
     protected function casts(): array

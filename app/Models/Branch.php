@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'location'])]
 class Branch extends Model
 {
+    protected $fillable = ['name', 'location'];
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'branch_products')

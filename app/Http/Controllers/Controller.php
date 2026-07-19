@@ -1,9 +1,9 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
-
-use App\Http\Traits\ApiResponser;
-
+ 
+use App\Traits\ApiResponser;
+ 
 abstract class Controller
 {
     use ApiResponser;

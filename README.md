@@ -66,17 +66,30 @@ The application follows the **Repository-Service Pattern** to achieve high separ
     ```
 
 4. **Setup Database:**
-    By default, the project is configured to use **SQLite** (making it ready to run immediately). To use SQLite, create the empty database file:
-    ```bash
-    touch database/database.sqlite
+    Create a new database named `sinod_tech` (or your preferred name) in MySQL, then update the `DB_*` variables in `.env` to connect to your MySQL database:
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=sinod_tech
+    DB_USERNAME=root
+    DB_PASSWORD=
     ```
-    *If you prefer MySQL, update the `DB_*` variables in `.env` to point to your MySQL server.*
 
 5. **Run Migrations & Seed Data:**
-    Run migrations and seed realistic sample data (Users, Branches, Products, Customers, Sales, and Stocks) in one command:
+    You can run migrations and seed realistic sample data (Users, Branches, Products, Customers, Sales, and Stocks) separately:
+    
+    To run the database migrations:
     ```bash
-    php artisan migrate:fresh --seed
+    php artisan migrate
     ```
+
+    To seed the database with realistic sample data:
+    ```bash
+    php artisan db:seed
+    ```
+
+    *(Alternatively, you can run both together using `php artisan migrate:fresh --seed`)*
 
 6. **Mailtrap SMTP Configuration (Optional):**
     To test the email invoices and re-engagement emails using [Mailtrap](https://mailtrap.io/), update these settings in `.env`:
@@ -100,8 +113,20 @@ The application follows the **Repository-Service Pattern** to achieve high separ
 
 ## Seed Data Details
 Running the seeders creates:
-*   **Admin/Employee accounts** (Default login email: `admin@example.com` / password: `password`).
+*   **Admin Account:**
+    *   Email: `admin@example.com`
+    *   Password: `password123`
+    *   Role: `admin`
+*   **Manager Account:**
+    *   Email: `manager@example.com`
+    *   Password: `password123`
+    *   Role: `manager`
+*   **Employee Accounts:**
+    *   Emails: `alice@example.com`, `bob@example.com`, `carol@example.com`, `david@example.com`, `eva@example.com`
+    *   Password: `password123`
+    *   Role: `employee`
 *   **Branches:** Multiple locations (e.g., Dhaka, Chittagong, Sylhet).
 *   **Products:** Configured with branch-specific initial stock inventory.
 *   **Customers:** Sample customer CRM records with varying purchase histories and assignment logs.
 *   **Sales:** Completed orders indicating branch-level transactions.
+

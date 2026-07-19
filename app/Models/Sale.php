@@ -11,22 +11,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable([
-    'invoice_number',
-    'customer_id',
-    'branch_id',
-    'employee_id',
-    'subtotal',
-    'tax_amount',
-    'discount_amount',
-    'total_amount',
-    'payment_status',
-    'payment_method',
-    'notes',
-])]
-#[HasFactory(SaleFactory::class)]
 class Sale extends Model
 {
+    protected $fillable = [
+        'invoice_number',
+        'customer_id',
+        'branch_id',
+        'employee_id',
+        'subtotal',
+        'tax_amount',
+        'discount_amount',
+        'total_amount',
+        'payment_status',
+        'payment_method',
+        'notes',
+    ];
     use HasFactoryTrait, SoftDeletes;
 
     protected function casts(): array

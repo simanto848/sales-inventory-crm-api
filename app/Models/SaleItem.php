@@ -9,18 +9,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory as HasFactoryTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'sale_id',
-    'product_id',
-    'branch_id',
-    'quantity',
-    'unit_price',
-    'total_price',
-    'discount',
-])]
-#[HasFactory(SaleItemFactory::class)]
 class SaleItem extends Model
 {
+    protected $fillable = [
+        'sale_id',
+        'product_id',
+        'branch_id',
+        'quantity',
+        'unit_price',
+        'total_price',
+        'discount',
+    ];
     use HasFactoryTrait;
 
     protected function casts(): array
