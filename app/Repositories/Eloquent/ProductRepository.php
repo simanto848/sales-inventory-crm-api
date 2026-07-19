@@ -49,9 +49,10 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return Product::query()
             ->with('branches')
-            ->where('name', 'like', "%{$query}%")
-            ->orWhere('sku', 'like', "%{$query}%")
-            ->orWhere('description', 'like', "%{$query}%")
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('sku', 'like', "%{$query}%");
+            })
             ->paginate($perPage);
     }
 }
