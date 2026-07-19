@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Repositories\Contracts\BranchRepositoryInterface;
 use App\Repositories\Contracts\BranchStockRepositoryInterface;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
 use App\Repositories\Contracts\EmployeeRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\SaleRepositoryInterface;
+use App\Repositories\Eloquent\BranchRepository;
 use App\Repositories\Eloquent\BranchStockRepository;
 use App\Repositories\Eloquent\CustomerRepository;
 use App\Repositories\Eloquent\EmployeeRepository;
@@ -18,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(
+            BranchRepositoryInterface::class,
+            BranchRepository::class
+        );
+
         $this->app->bind(
             ProductRepositoryInterface::class,
             ProductRepository::class
